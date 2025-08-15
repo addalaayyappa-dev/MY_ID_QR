@@ -18,11 +18,43 @@ const SecureQRForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Show message about Supabase requirement
-    toast({
-      title: "Backend Required",
-      description: "To implement secure QR codes with encryption, please connect to Supabase first.",
-    });
+    if (formData.pin.length !== 4) {
+      toast({
+        title: "Invalid PIN",
+        description: "Please enter a 4-digit PIN.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      
+      const response = await supabase.functions.invoke('create-secure-qr', {
+        body: {
+          data: { fullName: formData.fullName },
+          pin: formData.pin,
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      if (!response.data?.uuid) {
+        throw new Error('Invalid response from server');
+      }
+      
+      // Navigate to QR display with the UUID
+      navigate(`/qr/${response.data.uuid}`);
+      
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create secure QR code. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -61,26 +93,47 @@ const SecureQRForm = () => {
               </div>
             </div>
 
-            <div className="text-center p-8 bg-muted/50 rounded-lg">
-              <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Backend Integration Required</h3>
-              <p className="text-muted-foreground mb-4">
-                To implement secure QR codes with encryption and cloud storage, this app needs to be connected to a backend database.
-              </p>
-              <p className="text-sm text-muted-foreground mb-6">
-                Lovable has a native integration with Supabase that provides:
-              </p>
-              <ul className="text-sm text-muted-foreground text-left max-w-md mx-auto space-y-2 mb-6">
-                <li>• Secure database storage</li>
-                <li>• User authentication</li>
-                <li>• Data encryption</li>
-                <li>• PIN verification</li>
-                <li>• Cloud-based QR code access</li>
-              </ul>
-              <p className="text-sm text-muted-foreground">
-                Click on the green Supabase button at the top right of the interface to connect to Supabase and enable secure QR code generation.
-              </p>
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <Label htmlFor="fullName">Full Name</Label>
+                <Input
+                  id="fullName"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="pin">4-Digit PIN</Label>
+                <Input
+                  id="pin"
+                  type="password"
+                  value={formData.pin}
+                  onChange={(e) => setFormData(prev => ({ ...prev, pin: e.target.value }))}
+                  maxLength={4}
+                  pattern="[0-9]{4}"
+                  placeholder="Enter 4-digit PIN"
+                  className="text-center text-2xl tracking-widest"
+                  required
+                />
+                <p className="text-sm text-muted-foreground mt-1">
+                  This PIN will be required to view your information
+                </p>
+              </div>
+
+              <Button 
+                type="submit"
+                variant="secure"
+                size="lg"
+                disabled={formData.fullName.trim() === "" || formData.pin.length !== 4}
+                className="w-full"
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Generate Secure QR Code
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>

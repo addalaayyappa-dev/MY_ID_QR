@@ -155,11 +155,13 @@ const BasicQRForm = () => {
         }
       };
 
-      // Convert to JSON string
-      const dataString = JSON.stringify(structuredData);
+      // Create URL that points to our data viewer
+      const currentDomain = window.location.origin;
+      const dataParam = encodeURIComponent(JSON.stringify(structuredData));
+      const viewerUrl = `${currentDomain}/view?data=${dataParam}`;
       
-      // Generate QR code
-      const qrDataUrl = await QRCode.toDataURL(dataString, {
+      // Generate QR code with the viewer URL
+      const qrDataUrl = await QRCode.toDataURL(viewerUrl, {
         width: 400,
         margin: 2,
         color: {

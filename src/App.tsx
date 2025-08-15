@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import BasicQRForm from "./pages/BasicQRForm";
 import SecureQRForm from "./pages/SecureQRForm";
 import QRViewer from "./pages/QRViewer";
+import DataViewer from "./pages/DataViewer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/basic" element={<BasicQRForm />} />
           <Route path="/secure" element={<SecureQRForm />} />
           <Route path="/qr/:uuid" element={<QRViewer />} />
+          <Route path="/view" element={<DataViewer />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
