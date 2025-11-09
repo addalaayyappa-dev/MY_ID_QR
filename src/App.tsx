@@ -18,15 +18,16 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/basic" element={<BasicQRForm />} />
-          <Route path="/secure" element={<SecureQRForm />} />
-          <Route path="/qr/:uuid" element={<QRViewer />} />
-          <Route path="/view" element={<DataViewer />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+    <Routes>
+  <Route path="/" element={<Index />} />
+  <Route path="/basic" element={<BasicQRForm />} />
+  <Route path="/secure" element={<SecureQRForm />} />
+  <Route path="/qr/:uuid" element={<QRViewer />} />
+  <Route path="/secure/view/:uuid" element={<QRViewer />} /> {/* ✅ Add this */}
+  <Route path="/view" element={<DataViewer />} />
+  <Route path="*" element={<NotFound />} />
+</Routes>
+
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

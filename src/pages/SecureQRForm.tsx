@@ -172,12 +172,13 @@ const SecureQRForm = () => {
 
       const { supabase } = await import("@/integrations/supabase/client");
       
-      const response = await supabase.functions.invoke('create-secure-qr', {
-        body: {
-          data: structuredData,
-          pin: formData.pin,
-        },
-      });
+ const response = await supabase.functions.invoke('create-secure-qr', {
+  body: {
+    data: JSON.stringify(structuredData), // ✅ Convert to string
+    pin: formData.pin,
+  },
+});
+
 
       if (response.error) {
         throw new Error(response.error.message);

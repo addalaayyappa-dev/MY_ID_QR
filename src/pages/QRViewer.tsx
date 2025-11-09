@@ -10,17 +10,29 @@ const QRViewer = () => {
   const { uuid } = useParams();
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [decryptedData, setDecryptedData] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // This would normally verify the PIN and decrypt the data
-    // For now, show placeholder since backend is needed
-    
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+
+    const res = await fetch("https://mgwiowxkwzvfmijluucu.supabase.co/functions/v1/view-secure-qr", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer YOUR_SUPABASE_ANON_KEY`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ uuid, pin })
+    });
+
+    const result = await res.json();
+    setIsLoading(false);
+
+    if (res.ok) {
+      setDecryptedData(result.data);
+    } else {
+      alert(result.error || "Invalid PIN or expired QR");
+    }
   };
 
   return (
@@ -41,9 +53,7 @@ const QRViewer = () => {
               <Shield className="h-5 w-5 text-secondary-accent mt-0.5 flex-shrink-0" />
               <div>
                 <p className="font-semibold text-secondary-accent mb-1">Secure Access</p>
-                <p className="text-sm text-muted-foreground">
-                  ID: {uuid}
-                </p>
+                <p className="text-sm text-muted-foreground">ID: {uuid}</p>
               </div>
             </div>
 
@@ -60,8 +70,8 @@ const QRViewer = () => {
                   className="text-center text-2xl tracking-widest"
                 />
               </div>
-              
-              <Button 
+
+              <Button
                 type="submit"
                 variant="secure"
                 size="lg"
@@ -79,10 +89,16 @@ const QRViewer = () => {
               </Button>
             </form>
 
+            {decryptedData && (
+              <div className="p-4 bg-success/10 rounded-lg text-success">
+                <p className="font-semibold mb-2">Decrypted Data:</p>
+                <pre className="whitespace-pre-wrap break-words">{decryptedData}</pre>
+              </div>
+            )}
+
             <div className="text-center p-6 bg-muted/50 rounded-lg">
               <p className="text-sm text-muted-foreground">
-                This feature requires backend integration to verify PINs and decrypt data. 
-                Connect to Supabase to enable secure QR code functionality.
+                This feature is now live with Supabase Edge Functions. Your data is encrypted and securely retrieved using your PIN.
               </p>
             </div>
           </CardContent>
