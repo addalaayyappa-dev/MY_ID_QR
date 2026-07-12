@@ -4,34 +4,44 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Shield, Eye } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const QRViewer = () => {
   const { uuid } = useParams();
+  const navigate = useNavigate();
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [decryptedData, setDecryptedData] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const res = await fetch("https://mgwiowxkwzvfmijluucu.supabase.co/functions/v1/view-secure-qr", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer YOUR_SUPABASE_ANON_KEY`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ uuid, pin })
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke("view-secure-qr", {
+        body: { uuid, pin },
+      });
 
-    const result = await res.json();
-    setIsLoading(false);
+      if (error) {
+        throw new Error(error.message);
+      }
 
-    if (res.ok) {
-      setDecryptedData(result.data);
-    } else {
-      alert(result.error || "Invalid PIN or expired QR");
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      const decrypted = data?.data;
+      if (!decrypted) {
+        throw new Error("No data returned from secure function.");
+      }
+
+      const encoded = encodeURIComponent(JSON.stringify(JSON.parse(decrypted)));
+      navigate(`/view?data=${encoded}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Invalid PIN or expired QR";
+      alert(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,12 +99,6 @@ const QRViewer = () => {
               </Button>
             </form>
 
-            {decryptedData && (
-              <div className="p-4 bg-success/10 rounded-lg text-success">
-                <p className="font-semibold mb-2">Decrypted Data:</p>
-                <pre className="whitespace-pre-wrap break-words">{decryptedData}</pre>
-              </div>
-            )}
 
             <div className="text-center p-6 bg-muted/50 rounded-lg">
               <p className="text-sm text-muted-foreground">

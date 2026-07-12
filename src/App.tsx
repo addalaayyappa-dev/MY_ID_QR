@@ -34,3 +34,8 @@ const App = () => (
 );
 
 export default App;
+
+// qrcode.js is a popular open-source JavaScript library that allows you 
+// to generate QR codes easily. It supports cross-browser QR code generation 
+// using HTML5 canvas and table tags, and it doesn't have any additional 
+// dependencies.

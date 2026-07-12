@@ -185,7 +185,7 @@ const SecureQRForm = () => {
       }
 
       if (!response.data?.uuid) {
-        throw new Error('Invalid response from server');
+        throw new Error(response.error?.message ?? `Invalid response from server: ${JSON.stringify(response)}`);
       }
       
       // Generate QR code with the secure URL

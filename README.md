@@ -1,73 +1,42 @@
-# Welcome to your Lovable project
+# MyID QR
 
-## Project info
+MyID QR is a privacy-focused web app for generating and viewing personal identification information through QR codes. It offers two modes:
 
-**URL**: https://lovable.dev/projects/74bcc253-0c2f-42ed-9336-627e4d8f7e6f
+- Basic QR mode for quick offline sharing of non-sensitive data
+- Secure QR mode with a 4-digit PIN and encrypted storage for more sensitive information
 
-## How can I edit this code?
+The app is built with React, TypeScript, Vite, Tailwind CSS, shadcn/ui, and Supabase. It uses the Supabase Data API to store and retrieve secure QR records, allowing the frontend to interact with data directly without a separate backend server.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- Generate QR codes for personal information forms
+- Choose between a basic offline QR and a secure PIN-protected QR
+- View decrypted information through a dedicated viewer screen
+- Download generated QR images locally
+- Use Supabase-backed secure storage for encrypted payloads
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/74bcc253-0c2f-42ed-9336-627e4d8f7e6f) and start prompting.
+## Project Overview
 
-Changes made via Lovable will be committed automatically to this repo.
+This project is designed for convenience and demonstration of secure QR-based information handling. It is not a full identity management platform and should not be used as a replacement for official document storage or regulated identity systems.
 
-**Use your preferred IDE**
+## Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
 - React
-- shadcn-ui
+- TypeScript
+- Vite
 - Tailwind CSS
+- shadcn/ui
+- Supabase
+- QRCode.js
 
-## How can I deploy this project?
+## How the Data API is Used
 
-Simply open [Lovable](https://lovable.dev/projects/74bcc253-0c2f-42ed-9336-627e4d8f7e6f) and click on Share -> Publish.
+The Supabase Data API is the bridge between the frontend and the database in this project. It allows the app to create, read, update, and manage records without building a traditional backend service. In this project, it is used to store secure QR metadata and retrieve encrypted records when a user opens a protected QR. This makes the application simpler to deploy because the frontend can talk to a managed database directly through Supabase. The Data API also helps keep the project lightweight by reducing the need for custom API routes and server infrastructure. It is especially useful for rapid development, prototypes, and apps that need database access with minimal setup. Because the API is managed by Supabase, common tasks such as authentication, querying, and data persistence are handled more efficiently. This approach makes the app easier to maintain while still supporting secure and scalable data operations. In short, the Data API is the core data layer that powers the app’s secure QR workflow.
 
-## Can I connect a custom domain to my Lovable project?
+## Security Notes
 
-Yes, you can!
+- Basic QR mode stores data in plain text and should only be used for non-sensitive information.
+- Secure QR mode uses PIN-based protection and encryption for better confidentiality.
+- Always handle personal data responsibly and avoid sharing sensitive identifiers unnecessarily.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
