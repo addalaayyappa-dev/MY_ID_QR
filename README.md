@@ -1,4 +1,5 @@
 # MyID QR
+_https://myidqr.netlify.app/_
 
 MyID QR is a privacy-focused web app for generating and viewing personal identification information through QR codes. It offers two modes:
 
